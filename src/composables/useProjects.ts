@@ -13,6 +13,8 @@ import {
   editProjectService, // <-- agregar import
   deleteProjectService, // <-- agregar import
   hasProjectChangesService,
+  editBhaService,
+  deleteBhaService,
   //resetProjectChangesService,
 } from '../services/project';
 import type { Project, Bha, Perforations } from '../interfaces/models';
@@ -75,6 +77,37 @@ export function useProjects() {
       return response;
     } catch (error) {
       console.log('Error creating BHA:', error);
+    }
+  };
+
+  const editBha = async (projectId: string, bhaId: string, params: Partial<Bha>) => {
+    try {
+      const response = await editBhaService(projectId, bhaId, params);
+      if (response && response.message) {
+        Notify.create({
+          type: 'positive',
+          message: response.message,
+        });
+      }
+      bha.value = response.data || null;
+      return response;
+    } catch (error) {
+      console.log('Error editing BHA:', error);
+    }
+  };
+
+  const deleteBha = async (projectId: any, bhaId: any) => {
+    try {
+      const response = await deleteBhaService(projectId, bhaId);
+      if (response && response.message) {
+        Notify.create({
+          type: 'positive',
+          message: response.message,
+        });
+      }
+      return response;
+    } catch (error) {
+      console.log('Error deleting BHA:', error);
     }
   };
 
@@ -228,6 +261,8 @@ export function useProjects() {
     getProjectById,
     createProject,
     createBha,
+    editBha,
+    deleteBha,
     createPerforation,
     createProjectStaticData,
     editPerforation,

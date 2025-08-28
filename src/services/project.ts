@@ -36,6 +36,24 @@ export const createBhaService = async (projectId: string, params: any) => {
   }
 };
 
+export const editBhaService = async (projectId: string, bhaId: string, params: any) => {
+  try {
+    const response = await api.put(`/projects/${projectId}/bha/${bhaId}`, params);
+    return response.data;
+  } catch (error) {
+    console.log('Error editing BHA:', error);
+  }
+};
+
+export const deleteBhaService = async (projectId: string, bhaId: string) => {
+  try {
+    const response = await api.delete(`/projects/${projectId}/bha/${bhaId}`);
+    return response.data;
+  } catch (error) {
+    console.log('Error deleting BHA:', error);
+  }
+};
+
 export const createPerforationService = async (projectId: string, params: any) => {
   try {
     const response = await api.post(`/projects/${projectId}/perforation`, params);

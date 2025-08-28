@@ -171,7 +171,24 @@
         />
       </div>
 
-      <BhasForm v-model="showBhaForm" :project-id="project._id" @refresh="fetchProject" />
+      <BhasForm
+        v-if="showBhaForm"
+        v-model="showBhaForm"
+        :project-id="project._id"
+        @refresh="fetchProject"
+      />
+      <BhasForm
+        v-if="showEditBhaForm"
+        v-model="showEditBhaForm"
+        :project-id="project._id"
+        :edit-data="editingBha"
+        @refresh="
+          () => {
+            showEditBhaForm = false;
+            fetchProject();
+          }
+        "
+      />
       <PerforationsForm
         v-if="showPerforationForm"
         v-model="showPerforationForm"
@@ -214,9 +231,31 @@
           >
             <q-card class="shadow-3 hover-shadow" bordered>
               <q-card-section class="bg-gradient-primary text-white">
-                <div class="text-h6">
-                  <q-icon name="settings" class="q-mr-sm" />
-                  BHA #{{ idx + 1 }}
+                <div class="row items-center justify-between">
+                  <div class="text-h6">
+                    <q-icon name="settings" class="q-mr-sm" />
+                    BHA #{{ idx + 1 }}
+                  </div>
+                  <div v-if="user?.role === 'ADMIN'">
+                    <q-btn
+                      icon="edit"
+                      color="secondary"
+                      dense
+                      flat
+                      @click="onEditBha(bha)"
+                      class="q-mr-xs bg-white"
+                      size="md"
+                    />
+                    <q-btn
+                      icon="delete"
+                      color="negative"
+                      dense
+                      flat
+                      @click="onDeleteBha(bha)"
+                      class="bg-white"
+                      size="md"
+                    />
+                  </div>
                 </div>
               </q-card-section>
 
@@ -324,12 +363,16 @@ import ProjectKpiSummary from 'src/components/ProjectKpiSummary.vue';
 import ProjectStaticDataSummary from 'src/components/ProjectStaticDataSummary.vue';
 import ProjectReport from 'src/components/ProjectReport.vue';
 import { useAuth } from 'src/composables/useAuth';
+import { useQuasar } from 'quasar';
 
 const route = useRoute();
 const { user } = useAuth();
+const $q = useQuasar();
 
-const { project, getProjectById, deletePerforation } = useProjects();
+const { project, getProjectById, deletePerforation, deleteBha } = useProjects();
 const showBhaForm = ref(false);
+const editingBha = ref<any>(null);
+const showEditBhaForm = ref(false);
 const showPerforationForm = ref(false);
 const showStaticDataForm = ref(false);
 const bhaOptions = ref<any>([]);
@@ -365,6 +408,24 @@ const handleDeletePerforation = async (row: any) => {
   if (!project.value) return;
   await deletePerforation(project.value._id, row._id);
   await fetchProject();
+};
+
+const onEditBha = (bha: any) => {
+  editingBha.value = { ...bha };
+  showEditBhaForm.value = true;
+};
+
+const onDeleteBha = (bha: any) => {
+  $q.dialog({
+    title: 'Eliminar BHA',
+    message: '¿Seguro que deseas eliminar este BHA?',
+    cancel: true,
+    persistent: true,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  }).onOk(async () => {
+    await deleteBha(project.value?._id, bha._id);
+    await fetchProject();
+  });
 };
 </script>
 

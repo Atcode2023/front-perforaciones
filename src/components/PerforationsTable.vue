@@ -208,6 +208,7 @@ const columns = [
   { name: 'tvd', label: 'TVD', field: 'tvd', align: 'right' as const },
   { name: 'incl', label: 'Inclinación', field: 'incl', align: 'right' as const },
   { name: 'az', label: 'Azimut', field: 'az', align: 'right' as const },
+  { name: 'dls', label: 'DLS', field: 'dls', align: 'right' as const },
   { name: 'comments', label: 'Comentarios', field: 'comments', align: 'left' as const },
   { name: 'rop_kpi', label: 'ROP KPI', field: 'rop_kpi', align: 'right' as const },
   { name: 'rop_efe_kpi', label: 'ROP EFE KPI', field: 'rop_efe_kpi', align: 'right' as const },

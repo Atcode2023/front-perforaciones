@@ -522,6 +522,20 @@
                     </template>
                   </q-input>
                 </div>
+                <div class="col-12 col-md-3">
+                  <q-input
+                    v-model.number="form.dls"
+                    label="DLS (Dog Leg Severity)"
+                    type="number"
+                    step="0.1"
+                    outlined
+                    suffix="°/100p"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="explore" color="red" />
+                    </template>
+                  </q-input>
+                </div>
               </div>
             </q-tab-panel>
           </q-tab-panels>
@@ -608,6 +622,7 @@ const defaultForm = () => ({
   tvd: 0,
   incl: 0,
   az: 0,
+  dls: 0,
   comments: '',
   pierced_feet_kpi: 0,
   formations: '',
@@ -680,34 +695,14 @@ const submit = async () => {
     if (isEdit.value) {
       // Editar perforación
       await editPerforation(props.projectId, props.editData._id, form.value);
-      $q.notify({
-        type: 'positive',
-        message: 'Perforación actualizada exitosamente',
-        icon: 'check_circle',
-        position: 'top',
-      });
     } else {
       // Crear perforación
       await createPerforation(props.projectId, form.value);
-      $q.notify({
-        type: 'positive',
-        message: 'Perforación agregada exitosamente',
-        icon: 'check_circle',
-        position: 'top',
-      });
     }
     emit('update:modelValue', false);
     emit('refresh');
   } catch (error) {
     console.error(error);
-    $q.notify({
-      type: 'negative',
-      message: isEdit.value
-        ? 'Error al actualizar la perforación. Intente nuevamente.'
-        : 'Error al agregar la perforación. Intente nuevamente.',
-      icon: 'error',
-      position: 'top',
-    });
   } finally {
     loading.value = false;
   }

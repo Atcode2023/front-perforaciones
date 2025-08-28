@@ -7,7 +7,7 @@
           <div class="col">
             <div class="text-h5 text-weight-bold">
               <q-icon name="build_circle" class="q-mr-sm" size="md" />
-              Agregar BHA
+              {{ isEdit ? 'Editar BHA' : 'Agregar BHA' }}
             </div>
             <div class="text-caption opacity-80">Configuración de Bottom Hole Assembly</div>
           </div>
@@ -130,8 +130,8 @@
         />
         <q-btn
           color="primary"
-          label="Agregar BHA"
-          icon="add_circle"
+          :label="isEdit ? 'Guardar Cambios' : 'Agregar BHA'"
+          :icon="isEdit ? 'save' : 'add_circle'"
           @click="submit"
           :loading="loading"
           unelevated
@@ -147,14 +147,15 @@ import { ref, watch } from 'vue';
 import { useProjects } from 'src/composables/useProjects';
 import { useQuasar } from 'quasar';
 
-const props = defineProps<{ modelValue: boolean; projectId: string }>();
+const props = defineProps<{ modelValue: boolean; projectId: string; editData?: any }>();
 const emit = defineEmits(['update:modelValue', 'refresh']);
 
 const $q = useQuasar();
 const dialogValue = ref(props.modelValue);
-const { createBha } = useProjects();
+const { createBha, editBha } = useProjects();
 const loading = ref(false);
 const formRef = ref();
+const isEdit = ref(false);
 
 const form = ref({
   engine_od: '',
@@ -181,20 +182,31 @@ watch(
   (val) => {
     dialogValue.value = val;
     if (val) {
-      // Resetear formulario cuando se abre el diálogo
-      form.value = {
-        engine_od: '',
-        engine_type: '',
-        factor: 1,
-        trepan: '',
-      };
+      if (props.editData) {
+        // Modo edición
+        isEdit.value = true;
+        form.value = {
+          engine_od: props.editData.engine_od,
+          engine_type: props.editData.engine_type,
+          factor: props.editData.factor,
+          trepan: props.editData.trepan,
+        };
+      } else {
+        // Modo creación
+        isEdit.value = false;
+        form.value = {
+          engine_od: '',
+          engine_type: '',
+          factor: 1,
+          trepan: '',
+        };
+      }
     }
   },
   { immediate: true },
 );
 
 const submit = async () => {
-  // Validar formulario
   const isValid = await formRef.value?.validate();
   if (!isValid) {
     $q.notify({
@@ -207,24 +219,33 @@ const submit = async () => {
 
   try {
     loading.value = true;
-    await createBha(props.projectId, form.value);
-
-    // Notificación de éxito
-    $q.notify({
-      type: 'positive',
-      message: 'BHA agregado exitosamente',
-      icon: 'check_circle',
-      position: 'top',
-    });
-
+    if (isEdit.value && props.editData && props.editData._id) {
+      await editBha(props.projectId, props.editData._id, form.value);
+      $q.notify({
+        type: 'positive',
+        message: 'BHA editado exitosamente',
+        icon: 'check_circle',
+        position: 'top',
+      });
+    } else {
+      await createBha(props.projectId, form.value);
+      $q.notify({
+        type: 'positive',
+        message: 'BHA agregado exitosamente',
+        icon: 'check_circle',
+        position: 'top',
+      });
+    }
     emit('update:modelValue', false);
     emit('refresh');
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    // Notificación de error
+
     $q.notify({
       type: 'negative',
-      message: 'Error al agregar el BHA. Intente nuevamente.',
+      message: isEdit.value
+        ? 'Error al editar el BHA. Intente nuevamente.'
+        : 'Error al agregar el BHA. Intente nuevamente.',
       icon: 'error',
       position: 'top',
     });
