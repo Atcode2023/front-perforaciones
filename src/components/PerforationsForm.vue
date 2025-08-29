@@ -193,6 +193,23 @@
               <div class="row q-col-gutter-md">
                 <div class="col-12 col-md-6">
                   <q-input
+                    v-model.number="form.from_time"
+                    label="Tiempo Desde"
+                    type="number"
+                    step="0.1"
+                    :rules="[
+                      (val) => (val !== null && val !== undefined) || 'Este campo es requerido',
+                    ]"
+                    outlined
+                    suffix="hrs"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="timer" color="secondary" />
+                    </template>
+                  </q-input>
+                </div>
+                <div class="col-12 col-md-6">
+                  <q-input
                     v-model.number="form.to_time"
                     label="Tiempo Hasta"
                     type="number"
@@ -601,6 +618,7 @@ const defaultForm = () => ({
   directional_profile_type: '',
   formation: '',
   bha: '',
+  from_time: 0,
   to_time: 0,
   activity: '',
   depth_to: 0,
@@ -677,6 +695,7 @@ const submit = async () => {
   if (
     !form.value.directional_profile_type ||
     !form.value.formation ||
+    form.value.from_time === undefined ||
     form.value.to_time === undefined ||
     !form.value.activity ||
     form.value.depth_to === undefined ||

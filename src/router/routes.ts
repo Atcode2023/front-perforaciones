@@ -33,6 +33,12 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/geomechanics',
+    component: () => import('layouts/MainLayout.vue'),
+    beforeEnter: requireAuth,
+    children: [{ path: '', component: () => import('pages/GeomechanicsPage.vue') }],
+  },
+  {
     path: '/',
     redirect: '/login',
   },

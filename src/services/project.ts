@@ -1,3 +1,5 @@
+import { api } from 'src/boot/axios';
+
 export const getProjectByIdService = async (id: string) => {
   try {
     const response = await api.get(`/projects/${id}`);
@@ -16,7 +18,6 @@ export const getProjectsService = async (search: string, page: number, rowPerPag
     console.log('Error fetching projects:', error);
   }
 };
-import { api } from 'src/boot/axios';
 
 export const createProjectService = async (params: any) => {
   try {

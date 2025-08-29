@@ -30,6 +30,7 @@ export interface Perforations {
   directional_profile_type: string;
   formation: string;
   bha: string;
+  from_time: number;
   to_time: number;
   activity: string;
   depth_to: number;

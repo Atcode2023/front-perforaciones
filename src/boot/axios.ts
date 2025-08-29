@@ -18,6 +18,9 @@ declare module 'vue' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'https://api.colibrioil.com/' });
+const imgUrl = 'https://api.colibrioil.com/';
+//const api = axios.create({ baseURL: 'http://localhost:3000' });
+//const imgUrl = 'http://localhost:3000';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 // Interceptor para agregar el token de autenticación en el header Authorization
@@ -74,4 +77,4 @@ export default defineBoot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { api };
+export { api, imgUrl };

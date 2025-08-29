@@ -169,6 +169,13 @@ const menuOptions = [
     description: 'Administrar proyectos de perforación',
     roles: ['ADMIN', 'SUPERVISOR', 'USER'], // Todos pueden ver
   },
+  {
+    label: 'Geomecánica',
+    path: '/geomechanics',
+    icon: 'science',
+    description: 'Registros geomecánicos',
+    roles: ['ADMIN'],
+  },
 ];
 
 const filteredMenuOptions = computed(() =>
