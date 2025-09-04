@@ -196,14 +196,11 @@ const usernameRules = [
 
 const passwordRules = computed(() => {
   if (isEdit.value) {
-    return [(val: string) => !val || val.length >= 8 || 'Mínimo 8 caracteres si se especifica'];
+    // En edición: campo opcional, pero si se especifica debe tener mínimo 8 caracteres
+    return [(val: string) => !val || val.length >= 8 || 'Mínimo 8 caracteres'];
   }
-  return [
-    (val: string) => !!val || 'La contraseña es requerida',
-    (val: string) => val.length >= 8 || 'Mínimo 8 caracteres',
-    (val: string) =>
-      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(val) || 'Debe contener mayúscula, minúscula y número',
-  ];
+  // Creación: requerido y mínimo 8 caracteres
+  return [(val: string) => (val && val.length >= 8) || 'Mínimo 8 caracteres'];
 });
 
 // Validación del formulario

@@ -37,7 +37,7 @@
           </div>
           <div class="col-12 col-md-4 text-right">
             <q-btn
-              v-if="user?.role !== 'USER'"
+              v-if="user?.role === 'ADMIN'"
               color="primary"
               label="Nuevo Proyecto"
               icon="add_circle"
@@ -50,41 +50,6 @@
         </div>
 
         <!-- Estadísticas rápidas -->
-        <div class="row q-col-gutter-md q-mt-md" v-if="projects.length > 0">
-          <div class="col-12 col-sm-4">
-            <q-card flat class="bg-blue-1 text-center">
-              <q-card-section class="q-pa-md">
-                <q-icon name="work" color="primary" size="md" />
-                <div class="text-h6 text-primary text-weight-bold q-mt-xs">
-                  {{ projects.length }}
-                </div>
-                <div class="text-caption text-grey-7">Total Proyectos</div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <div class="col-12 col-sm-4">
-            <q-card flat class="bg-green-1 text-center">
-              <q-card-section class="q-pa-md">
-                <q-icon name="trending_up" color="green" size="md" />
-                <div class="text-h6 text-green text-weight-bold q-mt-xs">
-                  {{ activeProjects }}
-                </div>
-                <div class="text-caption text-grey-7">Proyectos Activos</div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <div class="col-12 col-sm-4">
-            <q-card flat class="bg-orange-1 text-center">
-              <q-card-section class="q-pa-md">
-                <q-icon name="business" color="orange" size="md" />
-                <div class="text-h6 text-orange text-weight-bold q-mt-xs">
-                  {{ uniqueClients }}
-                </div>
-                <div class="text-caption text-grey-7">Clientes Únicos</div>
-              </q-card-section>
-            </q-card>
-          </div>
-        </div>
       </q-card-section>
     </q-card>
 
@@ -174,6 +139,13 @@
               </div>
             </q-td>
 
+            <q-td key="supervisor" :props="props">
+              <div class="row items-center">
+                <q-icon name="supervisor_account" color="teal" size="sm" class="q-mr-xs" />
+                <span class="text-body2">{{ props.row.supervisor?.username || '-' }}</span>
+              </div>
+            </q-td>
+
             <q-td key="ing_night" :props="props">
               <div class="row items-center">
                 <q-icon name="nights_stay" color="indigo" size="sm" class="q-mr-xs" />
@@ -200,7 +172,7 @@
                   <q-tooltip>Ver detalles del proyecto</q-tooltip>
                 </q-btn>
                 <q-btn
-                  v-if="user?.role !== 'USER'"
+                  v-if="user?.role === 'ADMIN'"
                   size="sm"
                   color="secondary"
                   flat
@@ -211,7 +183,7 @@
                   <q-tooltip>Editar proyecto</q-tooltip>
                 </q-btn>
                 <q-btn
-                  v-if="user?.role !== 'USER'"
+                  v-if="user?.role === 'ADMIN'"
                   size="sm"
                   color="negative"
                   flat
@@ -296,7 +268,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useProjects } from 'src/composables/useProjects';
 import ProjectsForm from 'src/components/ProjectsForm.vue';
 import { formatDateDMYHM } from 'src/utils/date';
@@ -312,17 +284,6 @@ const loading = ref(false);
 const showForm = ref(false);
 const editProjectData = ref<any>(null);
 
-// Estadísticas computadas
-const activeProjects = computed(() => {
-  // Aquí puedes agregar lógica para determinar proyectos activos
-  return projects.value.length;
-});
-
-const uniqueClients = computed(() => {
-  const clients = new Set(projects.value.map((p) => p.customer));
-  return clients.size;
-});
-
 const columns = [
   { name: 'customer', label: 'Cliente', field: 'customer', align: 'left' as const, sortable: true },
   { name: 'well', label: 'Pozo', field: 'well', align: 'left' as const, sortable: true },
@@ -332,6 +293,12 @@ const columns = [
     name: 'ing_day',
     label: 'Ing. Día',
     field: (row: any) => row.ing_day.username,
+    align: 'left' as const,
+  },
+  {
+    name: 'supervisor',
+    label: 'Supervisor',
+    field: (row: any) => row.supervisor?.username || '-',
     align: 'left' as const,
   },
   {

@@ -404,10 +404,35 @@ const onEditPerforationRefresh = async () => {
   await fetchProject();
 };
 
-const handleDeletePerforation = async (row: any) => {
+const handleDeletePerforation = (row: any) => {
   if (!project.value) return;
-  await deletePerforation(project.value._id, row._id);
-  await fetchProject();
+
+  $q.dialog({
+    title: 'Eliminar Perforación',
+    message:
+      'Esta acción eliminará la perforación seleccionada y afectará las gráficas y datos estadísticos del proyecto. ¿Deseas continuar?',
+    ok: {
+      label: 'Sí, eliminar',
+      color: 'negative',
+      unelevated: true,
+    },
+    cancel: {
+      label: 'Cancelar',
+      color: 'primary',
+      flat: true,
+    },
+    persistent: true,
+  })
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    .onOk(async () => {
+      await deletePerforation(project.value!._id, row._id);
+      await fetchProject();
+      $q.notify({
+        type: 'positive',
+        message: 'Perforación eliminada y datos actualizados',
+        icon: 'check_circle',
+      });
+    });
 };
 
 const onEditBha = (bha: any) => {

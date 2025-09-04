@@ -36,7 +36,7 @@ export function useAuth() {
       if (response && response.token) {
         secureStorage.setItem('auth_token', response.token);
         token.value = response.token;
-        await router.push('/users');
+        await router.push('/projects');
       }
     } catch (error) {
       console.error('Login failed:', error);

@@ -175,13 +175,6 @@ const submit = async () => {
     loading.value = true;
     await createProjectStaticData(props.projectId, form.value);
 
-    $q.notify({
-      type: 'positive',
-      message: 'Datos estáticos agregados exitosamente',
-      icon: 'check_circle',
-      position: 'top',
-    });
-
     emit('update:modelValue', false);
     emit('refresh');
   } catch (error) {

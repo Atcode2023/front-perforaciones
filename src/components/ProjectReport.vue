@@ -155,6 +155,7 @@
                   dense
                   flat
                   hide-bottom
+                  :rows-per-page-options="[0]"
                   class="activity-table"
                 />
               </div>
@@ -344,15 +345,23 @@ const enhancedPieOptions: ChartOptions<'pie'> = {
 };
 
 // Computed properties (keeping the original logic)
-const pieData = computed(
-  () =>
-    projectReport.value?.charts?.activityPie || {
-      labels: [],
-      data: [],
-      percentages: [],
-      raw: [],
-    },
-);
+const pieData = computed(() => {
+  const base = projectReport.value?.charts?.activityPie || {
+    labels: [],
+    data: [],
+    percentages: [],
+    raw: [],
+  };
+  if (!base.labels.length) {
+    return {
+      labels: ['Sin datos'],
+      data: [0],
+      percentages: [0],
+      raw: [{ activity: 'Sin datos', time: 0, percentage: 0 }],
+    };
+  }
+  return base;
+});
 
 const chartData = computed(() => ({
   labels: pieData.value.labels,
@@ -383,13 +392,15 @@ const columns = [
 
 // All the computed properties for chart data (keeping original logic)
 const planVsRealData = computed(() => {
-  return (
-    projectReport.value?.charts?.drilledFeetPlanVsReal || {
-      labels: [],
-      planned: [],
-      real: [],
-    }
-  );
+  const data = projectReport.value?.charts?.drilledFeetPlanVsReal || {
+    labels: [],
+    planned: [],
+    real: [],
+  };
+  if (!data.labels.length) {
+    return { labels: ['-'], planned: [0], real: [0] };
+  }
+  return data;
 });
 
 const planVsRealChartData = computed(() => ({
@@ -413,13 +424,15 @@ const planVsRealChartData = computed(() => ({
 }));
 
 const drilledFeetDayData = computed(() => {
-  return (
-    projectReport.value?.charts?.drilledFeetDay || {
-      labels: [],
-      planned: [],
-      real: [],
-    }
-  );
+  const data = projectReport.value?.charts?.drilledFeetDay || {
+    labels: [],
+    planned: [],
+    real: [],
+  };
+  if (!data.labels.length) {
+    return { labels: ['-'], planned: [0], real: [0] };
+  }
+  return data;
 });
 
 const drilledFeetDayChartData = computed(() => ({
@@ -439,13 +452,15 @@ const drilledFeetDayChartData = computed(() => ({
 }));
 
 const drilledFeetNightData = computed(() => {
-  return (
-    projectReport.value?.charts?.drilledFeetNight || {
-      labels: [],
-      planned: [],
-      real: [],
-    }
-  );
+  const data = projectReport.value?.charts?.drilledFeetNight || {
+    labels: [],
+    planned: [],
+    real: [],
+  };
+  if (!data.labels.length) {
+    return { labels: ['-'], planned: [0], real: [0] };
+  }
+  return data;
 });
 
 const drilledFeetNightChartData = computed(() => ({
@@ -465,13 +480,15 @@ const drilledFeetNightChartData = computed(() => ({
 }));
 
 const ropAverageData = computed(() => {
-  return (
-    projectReport.value?.charts?.ropAverage || {
-      labels: [],
-      planned: [],
-      real: [],
-    }
-  );
+  const data = projectReport.value?.charts?.ropAverage || {
+    labels: [],
+    planned: [],
+    real: [],
+  };
+  if (!data.labels.length) {
+    return { labels: ['-'], planned: [0], real: [0] };
+  }
+  return data;
 });
 
 const ropAverageChartData = computed(() => ({
@@ -495,14 +512,16 @@ const ropAverageChartData = computed(() => ({
 }));
 
 const ropRotatedByShiftData = computed(() => {
-  return (
-    projectReport.value?.charts?.ropRotatedByShift || {
-      labels: [],
-      ropDay: [],
-      ropNight: [],
-      ropKpi: [],
-    }
-  );
+  const data = projectReport.value?.charts?.ropRotatedByShift || {
+    labels: [],
+    ropDay: [],
+    ropNight: [],
+    ropKpi: [],
+  };
+  if (!data.labels.length) {
+    return { labels: ['-'], ropDay: [0], ropNight: [0], ropKpi: [0] };
+  }
+  return data;
 });
 
 const ropRotatedByShiftChartData = computed(() => ({
@@ -543,16 +562,18 @@ const ropRotatedByShiftChartData = computed(() => ({
 }));
 
 const reviewTimeByShiftData = computed(() => {
-  return (
-    projectReport.value?.charts?.reviewTimeByShift || {
-      labels: [],
-      time: [],
-      day: [],
-      night: [],
-      kpi: [],
-      raw: [],
-    }
-  );
+  const data = projectReport.value?.charts?.reviewTimeByShift || {
+    labels: [],
+    time: [],
+    day: [],
+    night: [],
+    kpi: [],
+    raw: [],
+  };
+  if (!data.labels.length) {
+    return { labels: [0], time: [0], day: [0], night: [0], kpi: [0], raw: [] };
+  }
+  return data;
 });
 
 const reviewTimeByShiftChartData = computed(() => ({
@@ -593,16 +614,18 @@ const reviewTimeByShiftChartData = computed(() => ({
 }));
 
 const surveyTimeByShiftData = computed(() => {
-  return (
-    projectReport.value?.charts?.surveyTimeByShift || {
-      labels: [],
-      time: [],
-      day: [],
-      night: [],
-      kpi: [],
-      raw: [],
-    }
-  );
+  const data = projectReport.value?.charts?.surveyTimeByShift || {
+    labels: [],
+    time: [],
+    day: [],
+    night: [],
+    kpi: [],
+    raw: [],
+  };
+  if (!data.labels.length) {
+    return { labels: [0], time: [0], day: [0], night: [0], kpi: [0], raw: [] };
+  }
+  return data;
 });
 
 const surveyTimeByShiftChartData = computed(() => ({
@@ -643,16 +666,18 @@ const surveyTimeByShiftChartData = computed(() => ({
 }));
 
 const conexionTimeByShiftData = computed(() => {
-  return (
-    projectReport.value?.charts?.conexionTimeByShift || {
-      labels: [],
-      time: [],
-      day: [],
-      night: [],
-      kpi: [],
-      raw: [],
-    }
-  );
+  const data = projectReport.value?.charts?.conexionTimeByShift || {
+    labels: [],
+    time: [],
+    day: [],
+    night: [],
+    kpi: [],
+    raw: [],
+  };
+  if (!data.labels.length) {
+    return { labels: [0], time: [0], day: [0], night: [0], kpi: [0], raw: [] };
+  }
+  return data;
 });
 
 const conexionTimeByShiftChartData = computed(() => ({

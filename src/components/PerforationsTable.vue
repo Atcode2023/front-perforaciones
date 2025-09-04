@@ -67,6 +67,10 @@
             </q-chip>
           </template>
 
+          <template v-else-if="col.name === 'bha'">
+            {{ getBhaLabel(props.row.bha) }}
+          </template>
+
           <template v-else-if="col.name === 'actions'">
             <q-td>
               <q-btn
@@ -247,6 +251,12 @@ function canEdit(row: any) {
     return true;
   // Si no coincide, no puede editar
   return false;
+}
+
+function getBhaLabel(bhaId: string) {
+  if (!bhaId || !props.project?.bhas) return '-';
+  const index = props.project.bhas.findIndex((b: any) => b._id === bhaId);
+  return index > -1 ? `BHA #${index + 1}` : '-';
 }
 </script>
 
