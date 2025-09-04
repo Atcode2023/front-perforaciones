@@ -1,6 +1,7 @@
 import { defineBoot } from '#q-app/wrappers';
 import axios, { type AxiosInstance } from 'axios';
 import { Notify } from 'quasar';
+import { useSecureStorage } from 'src/composables/useSecureStorage';
 import SecureLS from 'secure-ls';
 import { useRouter } from 'vue-router';
 
@@ -39,18 +40,30 @@ api.interceptors.request.use(
 );
 
 // Interceptor de respuesta para mostrar errores con Notify
+let isLoggingOut = false;
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error.response?.status;
 
-    if (status === 401) {
+    if (status === 401 && !isLoggingOut) {
+      isLoggingOut = true;
+      const storage = useSecureStorage();
+      storage.removeItem('auth_token');
+      storage.removeItem('user');
       Notify.create({
         type: 'negative',
-        message: 'No autorizado (401). Por favor, inicia sesión de nuevo.',
+        message: 'Sesión expirada. Inicia sesión nuevamente.',
       });
-      const router = useRouter();
-      await router.push('login'); // Redirige a la ruta login
+      try {
+        const router = useRouter();
+        await router.push('/login');
+      } finally {
+        // pequeño delay para evitar carrera si llegan varias respuestas 401 simultáneas
+        setTimeout(() => {
+          isLoggingOut = false;
+        }, 500);
+      }
       return Promise.reject(new Error('Unauthorized'));
     }
 

@@ -82,9 +82,10 @@
               <h3 class="chart-title">ROP ROTADO POR TURNOS</h3>
             </div>
             <div class="chart-container detailed-chart">
-              <Chart
-                v-if="ropRotatedByShiftData.labels.length"
-                type="bar"
+              <Bar
+                v-if="
+                  ropRotatedByShiftData.labels.length && ropRotatedByShiftData.labels[0] !== '-'
+                "
                 :data="ropRotatedByShiftChartData"
                 :options="enhancedMixedOptions"
               />
@@ -97,8 +98,8 @@
               <h3 class="chart-title">TIEMPOS DE REPASO POR TURNO</h3>
             </div>
             <div class="chart-container detailed-chart">
-              <Chart
-                type="bar"
+              <Bar
+                v-if="reviewTimeByShiftData.labels.length && reviewTimeByShiftData.labels[0] !== 0"
                 :data="reviewTimeByShiftChartData"
                 :options="enhancedMixedOptions"
               />
@@ -111,9 +112,8 @@
               <h3 class="chart-title">TIEMPOS DE SURVEY POR TURNO</h3>
             </div>
             <div class="chart-container detailed-chart">
-              <Chart
-                v-if="surveyTimeByShiftData.labels.length"
-                type="bar"
+              <Bar
+                v-if="surveyTimeByShiftData.labels.length && surveyTimeByShiftData.labels[0] !== 0"
                 :data="surveyTimeByShiftChartData"
                 :options="enhancedMixedOptions"
               />
@@ -126,9 +126,10 @@
               <h3 class="chart-title">TIEMPOS DE CONEXIÓN POR TURNO</h3>
             </div>
             <div class="chart-container detailed-chart">
-              <Chart
-                v-if="conexionTimeByShiftData.labels.length"
-                type="bar"
+              <Bar
+                v-if="
+                  conexionTimeByShiftData.labels.length && conexionTimeByShiftData.labels[0] !== 0
+                "
                 :data="conexionTimeByShiftChartData"
                 :options="enhancedMixedOptions"
               />
@@ -168,8 +169,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, onUnmounted } from 'vue';
-import { Pie, Bar, Chart } from 'vue-chartjs';
+import { ref, onMounted, computed, watch, onUnmounted, nextTick } from 'vue';
+import { Pie, Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -184,16 +185,18 @@ import {
 import { useProjects } from 'src/composables/useProjects';
 import type { ChartOptions } from 'chart.js';
 
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-);
+if (typeof window !== 'undefined') {
+  ChartJS.register(
+    ArcElement,
+    Tooltip,
+    Legend,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+  );
+}
 
 const props = defineProps<{ projectId: string }>();
 
@@ -524,42 +527,45 @@ const ropRotatedByShiftData = computed(() => {
   return data;
 });
 
-const ropRotatedByShiftChartData = computed(() => ({
-  labels: ropRotatedByShiftData.value.labels,
-  datasets: [
-    {
-      type: 'bar' as const,
-      label: 'ROP DÍA',
-      backgroundColor: '#60A5FA',
-      data: ropRotatedByShiftData.value.ropDay,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'bar' as const,
-      label: 'ROP NOCHE',
-      backgroundColor: '#6B7280',
-      data: ropRotatedByShiftData.value.ropNight,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'line' as const,
-      label: 'ROP PROMEDIO KPI',
-      borderColor: '#EF4444',
-      backgroundColor: '#EF4444',
-      data: ropRotatedByShiftData.value.ropKpi,
-      fill: false,
-      tension: 0.3,
-      pointBackgroundColor: '#EF4444',
-      pointBorderColor: '#EF4444',
-      pointRadius: 6,
-      borderWidth: 3,
-      yAxisID: 'y',
-      order: 2,
-    },
-  ],
-}));
+const ropRotatedByShiftChartData = computed(
+  () =>
+    ({
+      labels: ropRotatedByShiftData.value.labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'ROP DÍA',
+          backgroundColor: '#60A5FA',
+          data: ropRotatedByShiftData.value.ropDay,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'bar',
+          label: 'ROP NOCHE',
+          backgroundColor: '#6B7280',
+          data: ropRotatedByShiftData.value.ropNight,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'line',
+          label: 'ROP PROMEDIO KPI',
+          borderColor: '#EF4444',
+          backgroundColor: '#EF4444',
+          data: ropRotatedByShiftData.value.ropKpi,
+          fill: false,
+          tension: 0.3,
+          pointBackgroundColor: '#EF4444',
+          pointBorderColor: '#EF4444',
+          pointRadius: 6,
+          borderWidth: 3,
+          yAxisID: 'y',
+          order: 2,
+        },
+      ],
+    }) as any,
+);
 
 const reviewTimeByShiftData = computed(() => {
   const data = projectReport.value?.charts?.reviewTimeByShift || {
@@ -576,42 +582,45 @@ const reviewTimeByShiftData = computed(() => {
   return data;
 });
 
-const reviewTimeByShiftChartData = computed(() => ({
-  labels: reviewTimeByShiftData.value.labels.map((i: number) => `#${i}`),
-  datasets: [
-    {
-      type: 'bar' as const,
-      label: 'Repaso Día',
-      backgroundColor: '#60A5FA',
-      data: reviewTimeByShiftData.value.day,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'bar' as const,
-      label: 'Repaso Noche',
-      backgroundColor: '#6B7280',
-      data: reviewTimeByShiftData.value.night,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'line' as const,
-      label: 'KPI Repaso',
-      borderColor: '#EF4444',
-      backgroundColor: '#EF4444',
-      data: reviewTimeByShiftData.value.kpi,
-      fill: false,
-      tension: 0.3,
-      pointBackgroundColor: '#EF4444',
-      pointBorderColor: '#EF4444',
-      pointRadius: 6,
-      borderWidth: 3,
-      yAxisID: 'y',
-      order: 2,
-    },
-  ],
-}));
+const reviewTimeByShiftChartData = computed(
+  () =>
+    ({
+      labels: reviewTimeByShiftData.value.labels.map((i: number) => `#${i}`),
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Repaso Día',
+          backgroundColor: '#60A5FA',
+          data: reviewTimeByShiftData.value.day,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'bar',
+          label: 'Repaso Noche',
+          backgroundColor: '#6B7280',
+          data: reviewTimeByShiftData.value.night,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'line',
+          label: 'KPI Repaso',
+          borderColor: '#EF4444',
+          backgroundColor: '#EF4444',
+          data: reviewTimeByShiftData.value.kpi,
+          fill: false,
+          tension: 0.3,
+          pointBackgroundColor: '#EF4444',
+          pointBorderColor: '#EF4444',
+          pointRadius: 6,
+          borderWidth: 3,
+          yAxisID: 'y',
+          order: 2,
+        },
+      ],
+    }) as any,
+);
 
 const surveyTimeByShiftData = computed(() => {
   const data = projectReport.value?.charts?.surveyTimeByShift || {
@@ -628,42 +637,45 @@ const surveyTimeByShiftData = computed(() => {
   return data;
 });
 
-const surveyTimeByShiftChartData = computed(() => ({
-  labels: surveyTimeByShiftData.value.labels.map((i: number) => `#${i}`),
-  datasets: [
-    {
-      type: 'bar' as const,
-      label: 'Survey Día',
-      backgroundColor: '#06B6D4',
-      data: surveyTimeByShiftData.value.day,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'bar' as const,
-      label: 'Survey Noche',
-      backgroundColor: '#F59E0B',
-      data: surveyTimeByShiftData.value.night,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'line' as const,
-      label: 'KPI Survey',
-      borderColor: '#EF4444',
-      backgroundColor: '#EF4444',
-      data: surveyTimeByShiftData.value.kpi,
-      fill: false,
-      tension: 0.3,
-      pointBackgroundColor: '#EF4444',
-      pointBorderColor: '#EF4444',
-      pointRadius: 6,
-      borderWidth: 3,
-      yAxisID: 'y',
-      order: 2,
-    },
-  ],
-}));
+const surveyTimeByShiftChartData = computed(
+  () =>
+    ({
+      labels: surveyTimeByShiftData.value.labels.map((i: number) => `#${i}`),
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Survey Día',
+          backgroundColor: '#06B6D4',
+          data: surveyTimeByShiftData.value.day,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'bar',
+          label: 'Survey Noche',
+          backgroundColor: '#F59E0B',
+          data: surveyTimeByShiftData.value.night,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'line',
+          label: 'KPI Survey',
+          borderColor: '#EF4444',
+          backgroundColor: '#EF4444',
+          data: surveyTimeByShiftData.value.kpi,
+          fill: false,
+          tension: 0.3,
+          pointBackgroundColor: '#EF4444',
+          pointBorderColor: '#EF4444',
+          pointRadius: 6,
+          borderWidth: 3,
+          yAxisID: 'y',
+          order: 2,
+        },
+      ],
+    }) as any,
+);
 
 const conexionTimeByShiftData = computed(() => {
   const data = projectReport.value?.charts?.conexionTimeByShift || {
@@ -680,42 +692,45 @@ const conexionTimeByShiftData = computed(() => {
   return data;
 });
 
-const conexionTimeByShiftChartData = computed(() => ({
-  labels: conexionTimeByShiftData.value.labels.map((i: number) => `#${i}`),
-  datasets: [
-    {
-      type: 'bar' as const,
-      label: 'Conexión Día',
-      backgroundColor: '#84CC16',
-      data: conexionTimeByShiftData.value.day,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'bar' as const,
-      label: 'Conexión Noche',
-      backgroundColor: '#EC4899',
-      data: conexionTimeByShiftData.value.night,
-      yAxisID: 'y',
-      order: 1,
-    },
-    {
-      type: 'line' as const,
-      label: 'KPI Conexión',
-      borderColor: '#EF4444',
-      backgroundColor: '#EF4444',
-      data: conexionTimeByShiftData.value.kpi,
-      fill: false,
-      tension: 0.3,
-      pointBackgroundColor: '#EF4444',
-      pointBorderColor: '#EF4444',
-      pointRadius: 6,
-      borderWidth: 3,
-      yAxisID: 'y',
-      order: 2,
-    },
-  ],
-}));
+const conexionTimeByShiftChartData = computed(
+  () =>
+    ({
+      labels: conexionTimeByShiftData.value.labels.map((i: number) => `#${i}`),
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Conexión Día',
+          backgroundColor: '#84CC16',
+          data: conexionTimeByShiftData.value.day,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'bar',
+          label: 'Conexión Noche',
+          backgroundColor: '#EC4899',
+          data: conexionTimeByShiftData.value.night,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'line',
+          label: 'KPI Conexión',
+          borderColor: '#EF4444',
+          backgroundColor: '#EF4444',
+          data: conexionTimeByShiftData.value.kpi,
+          fill: false,
+          tension: 0.3,
+          pointBackgroundColor: '#EF4444',
+          pointBorderColor: '#EF4444',
+          pointRadius: 6,
+          borderWidth: 3,
+          yAxisID: 'y',
+          order: 2,
+        },
+      ],
+    }) as any,
+);
 
 const fetchReport = async () => {
   loading.value = true;
@@ -729,6 +744,13 @@ onMounted(async () => {
 });
 onUnmounted(() => {
   stopProjectPolling();
+});
+// Redraw fix for production (ensures canvas has dimensions)
+watch(projectReport, async () => {
+  await nextTick();
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('resize'));
+  }
 });
 watch(
   () => props.projectId,
