@@ -171,31 +171,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch, onUnmounted, nextTick } from 'vue';
 import { Pie, Bar } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-} from 'chart.js';
+import { Chart as ChartJS, registerables } from 'chart.js';
 import { useProjects } from 'src/composables/useProjects';
 import type { ChartOptions } from 'chart.js';
 
 if (typeof window !== 'undefined') {
-  ChartJS.register(
-    ArcElement,
-    Tooltip,
-    Legend,
-    BarElement,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-  );
+  // Registra todos los elementos, escalas y controladores (incluye LineController y PieController)
+  ChartJS.register(...registerables);
 }
 
 const props = defineProps<{ projectId: string }>();
