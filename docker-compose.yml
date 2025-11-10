@@ -1,0 +1,19 @@
+services:
+  quasar-pwa:
+    # Construye la imagen usando el Dockerfile en el directorio actual (context: .)
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Especifica la etapa de producción como destino de la construcción
+      target: production-stage 
+    
+    # Asigna un nombre al contenedor para fácil referencia
+    container_name: quasar-pwa-app
+    
+    # Mapeo de puertos: host_port:container_port
+    # Accederás a tu aplicación en http://localhost:8080
+    ports:
+      - "8080:80"
+    
+    # Reinicia el contenedor si se detiene, a menos que se detenga manualmente
+    restart: always
