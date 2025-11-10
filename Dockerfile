@@ -21,7 +21,7 @@ RUN npm install
 # Comando de construcción de Quasar en modo PWA.
 # Asegúrate de haber ejecutado 'quasar mode add pwa' en tu proyecto local.
 # Quasar compila la PWA a la carpeta /dist/pwa por defecto.
-RUN quasar build -m pwa
+RUN quasar build
 
 
 # ----------------------------------------------------------------------
@@ -33,7 +33,7 @@ FROM nginx:stable-alpine AS production-stage
 
 # Copia los artefactos de construcción desde la etapa anterior.
 # El contenido de /app/dist/pwa se copia a la ubicación de servicio de Nginx.
-COPY --from=build-stage /app/dist/pwa /usr/share/nginx/html
+COPY --from=build-stage /app/dist/spa /usr/share/nginx/html
 
 # Expone el puerto por defecto de Nginx
 EXPOSE 80
