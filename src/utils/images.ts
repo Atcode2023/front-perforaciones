@@ -1,5 +1,6 @@
-import { imgUrl } from 'src/boot/axios';
+import { getImgUrl } from 'src/utils/apiClient';
 
-export const publicUrl = (url: string) => {
+export const publicUrl = async (url: string) => {
+  const imgUrl = await getImgUrl();
   return `${imgUrl}/${url}`;
 };

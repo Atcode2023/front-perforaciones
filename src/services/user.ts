@@ -1,7 +1,8 @@
-import { api } from 'src/boot/axios';
+import { getApi } from 'src/utils/apiClient';
 
 export const getUsersService = async (search: string, page: number, rowPerPage: number) => {
   try {
+    const api = await getApi();
     const response = await api.get('/users', {
       params: { search, page, limit: rowPerPage },
     });
@@ -14,6 +15,7 @@ export const getUsersService = async (search: string, page: number, rowPerPage: 
 
 export const createUserService = async (params: any) => {
   try {
+    const api = await getApi();
     const response = await api.post('/users', params);
 
     return response.data;
@@ -24,6 +26,7 @@ export const createUserService = async (params: any) => {
 
 export const updateUserService = async (params: any, id: string) => {
   try {
+    const api = await getApi();
     const response = await api.put(`/users/${id}`, params);
     return response.data;
   } catch (error) {
@@ -33,6 +36,7 @@ export const updateUserService = async (params: any, id: string) => {
 
 export const deleteUserService = async (id: string) => {
   try {
+    const api = await getApi();
     const response = await api.delete(`/users/${id}`);
     return response.data;
   } catch (error) {
@@ -42,6 +46,7 @@ export const deleteUserService = async (id: string) => {
 
 export const getRolesSelectService = async () => {
   try {
+    const api = await getApi();
     const response = await api.get('/users/roles/select');
     return response.data;
   } catch (error) {
@@ -51,6 +56,7 @@ export const getRolesSelectService = async () => {
 
 export const getUsersSelectService = async (filter = '') => {
   try {
+    const api = await getApi();
     const response = await api.get('/user/select', {
       params: { search: filter },
     });
@@ -62,6 +68,7 @@ export const getUsersSelectService = async (filter = '') => {
 
 export const getUserByIdService = async (id: number | string) => {
   try {
+    const api = await getApi();
     const response = await api.get(`/users/${id}`);
     return response.data;
   } catch (error) {
@@ -71,6 +78,7 @@ export const getUserByIdService = async (id: number | string) => {
 
 export const getUserRoleUsersSelectService = async () => {
   try {
+    const api = await getApi();
     const response = await api.get('/users/role/users');
     return response.data;
   } catch (error) {
@@ -80,6 +88,7 @@ export const getUserRoleUsersSelectService = async () => {
 
 export const getUserRoleSupervisorSelectService = async () => {
   try {
+    const api = await getApi();
     const response = await api.get('/users/role/supervisor');
     return response.data;
   } catch (error) {

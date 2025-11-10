@@ -174,6 +174,7 @@ const handleLogin = async (): Promise<void> => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:color';
 .login-container {
   width: 100vw;
   height: 100vh;
@@ -302,7 +303,7 @@ const handleLogin = async (): Promise<void> => {
 
 .form-subtitle {
   font-size: 1rem;
-  color: lighten($dark, 20%);
+  color: color.adjust($dark, $lightness: 20%);
   margin: 0;
 }
 
@@ -339,7 +340,7 @@ const handleLogin = async (): Promise<void> => {
   }
 
   :deep(.q-field__label) {
-    color: lighten($dark, 20%);
+    color: color.adjust($dark, $lightness: 20%);
     font-weight: 500;
   }
 }
@@ -350,7 +351,7 @@ const handleLogin = async (): Promise<void> => {
 }
 
 .toggle-icon {
-  color: lighten($dark, 30%);
+  color: color.adjust($dark, $lightness: 30%);
   transition: all 0.3s ease;
   font-size: 1.25rem;
 
@@ -415,7 +416,7 @@ const handleLogin = async (): Promise<void> => {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: lighten($dark, 30%);
+  color: color.adjust($dark, $lightness: 30%);
   font-size: 0.875rem;
 }
 

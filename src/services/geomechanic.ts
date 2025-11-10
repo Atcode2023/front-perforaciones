@@ -1,9 +1,10 @@
-import { api } from 'src/boot/axios';
+import { getApi } from 'src/utils/apiClient';
 
 export const listGeomechanicsService = async (
   params: { project?: string; search?: string; page?: number; limit?: number } = {},
 ) => {
   const { project, search, page, limit } = params;
+  const api = await getApi();
   const response = await api.get('/geomechanics/', {
     params: { project, search, page, limit },
   });
@@ -11,6 +12,7 @@ export const listGeomechanicsService = async (
 };
 
 export const getGeomechanicService = async (id: string) => {
+  const api = await getApi();
   const response = await api.get(`/geomechanics/${id}`);
   return response.data;
 };
@@ -25,6 +27,7 @@ export const createGeomechanicService = async (payload: any) => {
     }
   });
   if (payload.image) formData.append('image', payload.image);
+  const api = await getApi();
   const response = await api.post('/geomechanics', formData);
   return response.data;
 };
@@ -39,11 +42,13 @@ export const updateGeomechanicService = async (id: string, payload: any) => {
     }
   });
   if (payload.image) formData.append('image', payload.image);
+  const api = await getApi();
   const response = await api.put(`/geomechanics/${id}`, formData);
   return response.data;
 };
 
 export const deleteGeomechanicService = async (id: string) => {
+  const api = await getApi();
   const response = await api.delete(`/geomechanics/${id}`);
   return response.data;
 };

@@ -1,7 +1,8 @@
-import { api } from 'src/boot/axios';
+import { getApi } from 'src/utils/apiClient';
 
 export const getProjectByIdService = async (id: string) => {
   try {
+    const api = await getApi();
     const response = await api.get(`/projects/${id}`);
     return response.data;
   } catch (error) {
@@ -10,6 +11,7 @@ export const getProjectByIdService = async (id: string) => {
 };
 export const getProjectsService = async (search: string, page: number, rowPerPage: number) => {
   try {
+    const api = await getApi();
     const response = await api.get('/projects', {
       params: { search, page, limit: rowPerPage },
     });
@@ -21,6 +23,7 @@ export const getProjectsService = async (search: string, page: number, rowPerPag
 
 export const createProjectService = async (params: any) => {
   try {
+    const api = await getApi();
     const response = await api.post('/projects', params);
     return response.data;
   } catch (error) {
@@ -30,6 +33,7 @@ export const createProjectService = async (params: any) => {
 
 export const createBhaService = async (projectId: string, params: any) => {
   try {
+    const api = await getApi();
     const response = await api.post(`/projects/${projectId}/bha`, params);
     return response.data;
   } catch (error) {
@@ -39,6 +43,7 @@ export const createBhaService = async (projectId: string, params: any) => {
 
 export const editBhaService = async (projectId: string, bhaId: string, params: any) => {
   try {
+    const api = await getApi();
     const response = await api.put(`/projects/${projectId}/bha/${bhaId}`, params);
     return response.data;
   } catch (error) {
@@ -48,6 +53,7 @@ export const editBhaService = async (projectId: string, bhaId: string, params: a
 
 export const deleteBhaService = async (projectId: string, bhaId: string) => {
   try {
+    const api = await getApi();
     const response = await api.delete(`/projects/${projectId}/bha/${bhaId}`);
     return response.data;
   } catch (error) {
@@ -57,6 +63,7 @@ export const deleteBhaService = async (projectId: string, bhaId: string) => {
 
 export const createPerforationService = async (projectId: string, params: any) => {
   try {
+    const api = await getApi();
     const response = await api.post(`/projects/${projectId}/perforation`, params);
     return response.data;
   } catch (error) {
@@ -66,6 +73,7 @@ export const createPerforationService = async (projectId: string, params: any) =
 
 export const createProjectStaticDataService = async (projectId: string, params: any) => {
   try {
+    const api = await getApi();
     const response = await api.post(`/projects/${projectId}/static-data`, params);
     return response.data;
   } catch (error) {
@@ -79,6 +87,7 @@ export const editPerforationService = async (
   params: any,
 ) => {
   try {
+    const api = await getApi();
     const response = await api.put(`/projects/${projectId}/perforation/${perforationId}`, params);
     return response.data;
   } catch (error) {
@@ -88,6 +97,7 @@ export const editPerforationService = async (
 
 export const deletePerforationService = async (projectId: string, perforationId: string) => {
   try {
+    const api = await getApi();
     const response = await api.delete(`/projects/${projectId}/perforation/${perforationId}`);
     return response.data;
   } catch (error) {
@@ -97,6 +107,7 @@ export const deletePerforationService = async (projectId: string, perforationId:
 
 export const getProjectReportService = async (projectId: string) => {
   try {
+    const api = await getApi();
     const response = await api.get(`/projects/${projectId}/report`);
     return response.data;
   } catch (error) {
@@ -109,6 +120,7 @@ export const editProjectService = async (
   params: { customer: string; well: string },
 ) => {
   try {
+    const api = await getApi();
     const response = await api.put(`/projects/${projectId}`, params);
     return response.data;
   } catch (error) {
@@ -118,6 +130,7 @@ export const editProjectService = async (
 
 export const deleteProjectService = async (projectId: string) => {
   try {
+    const api = await getApi();
     const response = await api.delete(`/projects/${projectId}`);
     return response.data;
   } catch (error) {
@@ -127,6 +140,7 @@ export const deleteProjectService = async (projectId: string) => {
 
 export const hasProjectChangesService = async (projectId: string) => {
   try {
+    const api = await getApi();
     const response = await api.get(`/projects/${projectId}/has-changes`);
     return response.data;
   } catch (error) {
@@ -136,6 +150,7 @@ export const hasProjectChangesService = async (projectId: string) => {
 
 export const resetProjectChangesService = async (projectId: string) => {
   try {
+    const api = await getApi();
     const response = await api.post(`/projects/${projectId}/reset-changes`);
     return response.data;
   } catch (error) {
