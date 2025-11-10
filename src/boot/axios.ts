@@ -19,7 +19,8 @@ declare module 'vue' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'https://apiperforaciones.atcode.dev/' });
-const imgUrl = 'https://apiperforaciones.atcode.dev/';
+import { IMG_URL } from 'src/utils/imgConfig';
+const imgUrl = IMG_URL;
 //const api = axios.create({ baseURL: 'http://localhost:3000' });
 //const imgUrl = 'http://localhost:3000';
 const ls = new SecureLS({ encodingType: 'aes' });

@@ -1,6 +1,5 @@
-import { getImgUrl } from 'src/utils/apiClient';
+import { IMG_URL } from 'src/utils/imgConfig';
 
-export const publicUrl = async (url: string) => {
-  const imgUrl = await getImgUrl();
-  return `${imgUrl}/${url}`;
+export const publicUrl = (url: string) => {
+  return `${IMG_URL}/${url}`;
 };
